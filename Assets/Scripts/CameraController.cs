@@ -9,12 +9,11 @@ public class CameraController : MonoBehaviour {
     private const int ZOOM_SPEED = 60;
 
     private new Camera camera;
-    // Use this for initialization
+
     void Start () {
         camera = GetComponent<Camera>();
 	}
 
-    // Update is called once per frame
     void Update() {
 
         //Movement
@@ -34,6 +33,7 @@ public class CameraController : MonoBehaviour {
         //Rotation
         if (Input.GetKey(KeyCode.Mouse1))
         { 
+            //Mouse X -> Rotate camera about World space Y axis
             camera.transform.Rotate(new Vector3(
                 0,
                 Input.GetAxis("Mouse X") * -1 * ROT_SPEED * Time.deltaTime,
@@ -41,6 +41,7 @@ public class CameraController : MonoBehaviour {
                 Space.World
             );
 
+            //Mouse Y -> Rotate camera about local space X axis
             camera.transform.Rotate(new Vector3(
                 Input.GetAxis("Mouse Y") * ROT_SPEED * Time.deltaTime,
                 0,
@@ -50,6 +51,8 @@ public class CameraController : MonoBehaviour {
         }
 
         //Zoom
+        //Removed this because it was weird
+        //Maybe reimplement as a toggle between a "zoomed" FOV and a "standard" FOV by pressing/releasing a Zoom key
         /*
         float fov = camera.fieldOfView;
         if (Input.GetAxis("Mouse ScrollWheel") > 0)
