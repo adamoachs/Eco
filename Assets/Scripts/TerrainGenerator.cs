@@ -12,15 +12,17 @@ public class TerrainGenerator : MonoBehaviour
     public int WorldSizeX;
     public int WorldSizeZ;
 
-    //Prefabs for the land and water tiles
+    //Prefabs for terrain objects
     public GameObject deepWaterPrefab;
     public GameObject medWaterPrefab;
     public GameObject shallowWaterPrefab;
-
     public GameObject stonePrefab;
     public GameObject grassPrefab;
     public GameObject dirtPrefab;
     public GameObject sandPrefab;
+    public GameObject boundaryWallPrefab;
+
+    public GameObject testAnimalPrefab;
 
     //Generation settings; change these to affect generation
     private const float DIRT_START_HEIGHT = 11;
@@ -40,6 +42,8 @@ public class TerrainGenerator : MonoBehaviour
     private float offset_seed_z;
     private Vector3[] vectors;
     private float medianHeight;
+    private float maxHeight;
+    private float boundaryHeight;
 
     //Init
     void Start()
@@ -52,6 +56,12 @@ public class TerrainGenerator : MonoBehaviour
 
         GenerateLand();
         GenerateWater();
+        GenerateBoundaryWalls();
+
+        float x = 50;
+        float z = 50;
+        Vector3 animalPos = vectors.Where(v => v.x == x && v.z == z).First();
+        var animal = Instantiate(testAnimalPrefab, animalPos + new Vector3(0, 1, 0), Quaternion.identity);
     }
 
     /// <summary>
@@ -81,6 +91,8 @@ public class TerrainGenerator : MonoBehaviour
         //Calculations for other stuff prior to building the cubes
         CorrectWaterCoverage();
         medianHeight = Utility.Percentile(vectors.Select(v => v.y), 0.5F);
+        maxHeight = vectors.Max(v => v.y);
+        boundaryHeight = maxHeight + 5;
 
         //Loop through array of vectors and instantiate cubes
         foreach (Vector3 vector in vectors)
@@ -105,6 +117,28 @@ public class TerrainGenerator : MonoBehaviour
                 water.transform.parent = this.transform;
             }
         }
+    }
+
+    /// <summary>
+    /// Generates the boundary walls of the world
+    /// </summary>
+    private void GenerateBoundaryWalls()
+    {
+        var wall1 = Instantiate(boundaryWallPrefab, new Vector3((WorldSizeX / 2) - 0.5F, boundaryHeight / 2, -1), Quaternion.identity);
+        wall1.transform.parent = this.transform;
+        wall1.transform.localScale = new Vector3(WorldSizeX, boundaryHeight, 1);
+
+        var wall2 = Instantiate(boundaryWallPrefab, new Vector3((WorldSizeX / 2) - 0.5F, boundaryHeight / 2, WorldSizeZ), Quaternion.identity);
+        wall2.transform.parent = this.transform;
+        wall2.transform.localScale = new Vector3(WorldSizeX, boundaryHeight, 1);
+
+        var wall3 = Instantiate(boundaryWallPrefab, new Vector3(-1, boundaryHeight / 2, (WorldSizeZ / 2) - 0.5F), Quaternion.identity);
+        wall3.transform.parent = this.transform;
+        wall3.transform.localScale = new Vector3(1, boundaryHeight, WorldSizeZ + 2);
+
+        var wall4 = Instantiate(boundaryWallPrefab, new Vector3(WorldSizeX, boundaryHeight / 2, (WorldSizeZ / 2) - 0.5F), Quaternion.identity);
+        wall4.transform.parent = this.transform;
+        wall4.transform.localScale = new Vector3(1, boundaryHeight, WorldSizeZ + 2);
     }
 
     /// <summary>

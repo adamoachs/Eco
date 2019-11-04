@@ -7,17 +7,7 @@ using UnityEngine;
 /// </summary>
 public abstract class Gene {
 
-    /// <summary>
-    /// Gene value between 0 and 1
-    /// </summary>
-    public float Value
-    {
-        get { return Value; }
-        set
-        {
-            value = Mathf.Clamp01(value);
-        }
-    }
+    public float Value;
 
     /// <summary>
     /// Return a gene of either parent, chosen at random
