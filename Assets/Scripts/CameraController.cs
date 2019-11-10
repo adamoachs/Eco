@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour {
     
-    private const int MOVE_SPEED = 2;
-    private const int ROT_SPEED = 50;
-    private const int ZOOM_SPEED = 60;
+    private const float MOVE_SPEED = 0.5F;
+    private const float ROT_SPEED = 100;
+    private const float ZOOM_SPEED = 60;
 
     private new Camera camera;
 
@@ -18,9 +18,9 @@ public class CameraController : MonoBehaviour {
 
         //Movement
         if (Input.GetKey(KeyCode.Space))
-            camera.transform.position += camera.transform.up.normalized * MOVE_SPEED;
+            camera.transform.position += Vector3.up * MOVE_SPEED;
         if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-            camera.transform.position += camera.transform.up.normalized * -1 * MOVE_SPEED;
+            camera.transform.position += Vector3.down * MOVE_SPEED;
         if (Input.GetKey(KeyCode.W))
             camera.transform.position += camera.transform.forward.normalized * MOVE_SPEED;
         if (Input.GetKey(KeyCode.S))
@@ -36,14 +36,14 @@ public class CameraController : MonoBehaviour {
             //Mouse X -> Rotate camera about World space Y axis
             camera.transform.Rotate(new Vector3(
                 0,
-                Input.GetAxis("Mouse X") * -1 * ROT_SPEED * Time.deltaTime,
+                Input.GetAxis("Mouse X")  * ROT_SPEED * Time.deltaTime,
                 0),
                 Space.World
             );
 
             //Mouse Y -> Rotate camera about local space X axis
             camera.transform.Rotate(new Vector3(
-                Input.GetAxis("Mouse Y") * ROT_SPEED * Time.deltaTime,
+                Input.GetAxis("Mouse Y") * -1 * ROT_SPEED * Time.deltaTime,
                 0,
                 0),
                 Space.Self

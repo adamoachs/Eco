@@ -22,8 +22,6 @@ public class TerrainGenerator : MonoBehaviour
     public GameObject sandPrefab;
     public GameObject boundaryWallPrefab;
 
-    public GameObject testAnimalPrefab;
-
     //Generation settings; change these to affect generation
     private const float DIRT_START_HEIGHT = 11;
     private const float GRASS_START_HEIGHT = 12;
@@ -36,11 +34,11 @@ public class TerrainGenerator : MonoBehaviour
     private const float MIN_WATER_COVERAGE = 0.20F;
 
     //Calculated fields
+    private Vector3[] vectors;
     private float seed_x;
     private float seed_z;
     private float offset_seed_x;
     private float offset_seed_z;
-    private Vector3[] vectors;
     private float medianHeight;
     private float maxHeight;
     private float boundaryHeight;
@@ -58,10 +56,19 @@ public class TerrainGenerator : MonoBehaviour
         GenerateWater();
         GenerateBoundaryWalls();
 
-        float x = 50;
-        float z = 50;
-        Vector3 animalPos = vectors.Where(v => v.x == x && v.z == z).First();
-        var animal = Instantiate(testAnimalPrefab, animalPos + new Vector3(0, 1, 0), Quaternion.identity);
+        CreaturePopulater cp = new CreaturePopulater(this);
+        cp.Populate();
+    }
+
+    public float GetY(float x, float z)
+    {
+        return GetTileAtPosition(x, z).transform.position.y;
+    }
+
+    public GameObject GetTileAtPosition(float x, float z)
+    {
+        var rays = Physics.RaycastAll(new Vector3(x, 100, z), Vector3.down, 100F);
+        return rays.Where(r => r.collider.gameObject.name.Contains("Cube") || r.collider.gameObject.name.Contains("Water")).FirstOrDefault().collider.gameObject;
     }
 
     /// <summary>

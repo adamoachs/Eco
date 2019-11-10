@@ -11,11 +11,21 @@ using System.Linq;
 public abstract class Creature : MonoBehaviour {
 
     /// <summary>
+    /// Population density is expressed a number of individuals per area of 1000 units
+    /// </summary>
+    public abstract float IntitalPopulationDensity { get; }
+
+    /// <summary>
+    /// Give the creature default starting genes
+    /// </summary>
+    public abstract void SetDefaults();
+
+    /// <summary>
     /// Breed to creatures together
     /// </summary>
     /// <param name="ParentA">ParentA</param>
     /// <param name="ParentB">ParentB</param>
-    /// <returns>New child creature of seem type</returns>
+    /// <returns>New child creature of same type</returns>
 	public static Creature Breed(Creature ParentA, Creature ParentB)
     {
         //Don't allow cross-breeding. Maybe in the future this could be allowed with select species?

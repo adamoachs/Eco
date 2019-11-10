@@ -9,23 +9,22 @@ using UnityEngine;
 /// </summary>
 public abstract class Animal : Creature
 {
-    public SpeedGene Speed { get; private set; }
+    /// <summary>
+    /// Speed defines how many times per second to move
+    /// </summary>
+    public abstract float InitialSpeed { get; }
+
+    protected SpeedGene SpeedGene { get; set; }
+    protected TerrainGenerator terrainGenerator;
 
     private CharacterController controller;
     private Vector3 destination;
 
-    public Animal()
-    {
-        Speed = new SpeedGene()
-        {
-            Value = 1
-        };
-    }
-
     public void Start()
     {
+        terrainGenerator = GameObject.Find("TerrainHandler").GetComponent("TerrainGenerator") as TerrainGenerator;
         controller = GetComponent<CharacterController>();
-        InvokeRepeating("OnTick", 1 / Speed.Value, 1 / Speed.Value);
+        InvokeRepeating("OnTick", UnityEngine.Random.Range(0F,1F), 1 / SpeedGene.Value);
     }
 
     private void OnTick()
@@ -38,7 +37,8 @@ public abstract class Animal : Creature
             Vector3.forward
         };
         Vector3 destVector = vectors[UnityEngine.Random.Range(0,vectors.Count)];
-        destination = new Vector3((float)Math.Round(transform.position.x), transform.position.y, (float)Math.Round(transform.position.z)) + destVector;
+        destination = new Vector3((float)Math.Round(transform.position.x), transform.position.y + 1, (float)Math.Round(transform.position.z)) + destVector;
+        destination = new Vector3(destination.x, terrainGenerator.GetY(destination.x, destination.z), destination.z);
         transform.LookAt(new Vector3(destination.x, transform.position.y, destination.z));
     }
 
@@ -51,4 +51,13 @@ public abstract class Animal : Creature
             controller.SimpleMove(offset.normalized * Time.deltaTime * 60 * 5);
         }
     }
+
+    public override void SetDefaults()
+    {
+        this.SpeedGene = new SpeedGene()
+        {
+            Value = InitialSpeed
+        };
+    }
+
 }
