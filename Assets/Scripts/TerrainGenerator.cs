@@ -67,8 +67,11 @@ public class TerrainGenerator : MonoBehaviour
 
     public GameObject GetTileAtPosition(float x, float z)
     {
-        var rays = Physics.RaycastAll(new Vector3(x, 100, z), Vector3.down, 100F);
-        return rays.Where(r => r.collider.gameObject.name.Contains("Cube") || r.collider.gameObject.name.Contains("Water")).FirstOrDefault().collider.gameObject;
+        var rays = Physics.RaycastAll(new Vector3(x, 100, z), Vector3.down, 200F);
+        var rays2 = rays.Where(r => r.collider.gameObject.name.Contains("Cube") || r.collider.gameObject.name.Contains("Water"));
+        if (rays2 == null || rays2.Count() == 0)
+            return null; //Not sure how this is happening
+        return rays2.First().collider.gameObject;
     }
 
     /// <summary>
